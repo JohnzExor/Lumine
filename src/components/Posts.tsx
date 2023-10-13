@@ -44,7 +44,7 @@ const Posts = ({ data, handleDelete, handleEdit }: Props) => {
           <div className="space-y-1">
             <h4 className="text-sm font-medium leading-none">
               {data.author}
-              {data.uid === auth.currentUser?.uid ? " (You)" : ""}
+              {data.uid === auth.currentUser?.uid && " (You)"}
             </h4>
             {isEditing ? (
               <form onSubmit={onSubmit} className=" w-64">
@@ -67,10 +67,12 @@ const Posts = ({ data, handleDelete, handleEdit }: Props) => {
                 </footer>
               </form>
             ) : (
-              <p className="text-sm text-muted-foreground">{data.text}</p>
+              <p className="text-sm text-muted-foreground break-words w-60">
+                {data.text}
+              </p>
             )}
           </div>
-          {data.uid === auth.currentUser?.uid ? (
+          {data.uid === auth.currentUser?.uid && (
             <div className=" ml-auto">
               <DropdownMenu>
                 <DropdownMenuTrigger>
@@ -88,8 +90,6 @@ const Posts = ({ data, handleDelete, handleEdit }: Props) => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-          ) : (
-            ""
           )}
         </div>
       </div>

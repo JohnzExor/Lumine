@@ -40,7 +40,7 @@ type UserData = {
 };
 
 type Props = {
-  userData: UserData;
+  userData: UserData[];
 };
 
 const NavigationBar = ({ userData }: Props) => {
@@ -52,9 +52,11 @@ const NavigationBar = ({ userData }: Props) => {
       </label>
       <Sheet>
         <SheetTrigger asChild>
-          <button>
-            <FaBarsStaggered size={25} />
-          </button>
+          {auth.currentUser && (
+            <button>
+              <FaBarsStaggered size={25} />
+            </button>
+          )}
         </SheetTrigger>
         <SheetContent>
           <SheetHeader>
@@ -65,9 +67,12 @@ const NavigationBar = ({ userData }: Props) => {
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-              <label className=" text-xl">
-                {userData.firstName + " " + userData.lastName}
-              </label>
+              {userData.map((data, index) => (
+                <label className=" text-xl" key={index}>
+                  {data.firstName + " " + data.lastName}
+                  <p className=" text-xs">{auth.currentUser?.email}</p>
+                </label>
+              ))}
             </div>
           </SheetHeader>
           <div className="flex flex-col gap-4 py-4">
@@ -107,17 +112,16 @@ const NavigationBar = ({ userData }: Props) => {
               </SheetClose>
             </div>
           </div>
-          <SheetFooter>
+          <SheetFooter className=" mt-64">
             <AlertDialog>
               <AlertDialogTrigger className=" p-2 bg-black text-white rounded-md">
                 Logout
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    your account and remove your data from our servers.
+                    You are about to be logged out from this device.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

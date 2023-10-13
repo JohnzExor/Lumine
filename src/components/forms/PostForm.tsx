@@ -21,19 +21,17 @@ type Props = {
 };
 
 const FormSchema = z.object({
-  bio: z
-    .string()
-    .min(10, {
-      message: "Bio must be at least 10 characters.",
-    })
-    .max(160, {
-      message: "Bio must not be longer than 30 characters.",
-    }),
+  bio: z.string().min(1, {
+    message: "Bio must be at least 1 characters.",
+  }),
 });
 
 const PostForm = ({ updatePosts }: Props) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      bio: "",
+    },
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {

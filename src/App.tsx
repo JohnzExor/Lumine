@@ -38,19 +38,13 @@ const App = () => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      console.log(user);
+    onAuthStateChanged(auth, () => {
+      fetchData();
     });
   }, []);
   return (
     <div>
-      {userData.map((data, index) => (
-        <NavigationBar userData={data} key={index} />
-      ))}
-
+      <NavigationBar userData={userData} />
       <Routes>
         <Route
           path="/home"
