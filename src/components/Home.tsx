@@ -17,14 +17,8 @@ type Data = {
   uid: string;
 };
 
-type UserData = {
-  firstName: string;
-  lastName: string;
-};
-
 const Home = () => {
   const [data, setData] = useState<Data[]>([]);
-  const [userData, setUserData] = useState<UserData[]>([]);
 
   const fetchData = async () => {
     const querySnapshot = await getDocs(collection(db, "posts"));
