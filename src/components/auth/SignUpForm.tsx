@@ -13,31 +13,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "@/Firebase";
-import { doc, setDoc } from "firebase/firestore";
 import { Link, useNavigate } from "react-router-dom";
+import { useFirebaseServices } from "../store/useFirebase";
+import { signUpFormSchema } from "@/lib/types";
 
 const SignUpForm = () => {
   const navigate = useNavigate();
+  const { signUp } = useFirebaseServices();
 
-  const formSchema = z.object({
-    firstName: z.string().min(2, {
-      message: "email must be at least 5 characters.",
-    }),
-    lastName: z.string().min(2, {
-      message: "email must be at least 5 characters.",
-    }),
-    email: z.string().min(2, {
-      message: "email must be at least 5 characters.",
-    }),
-    password: z.string().min(2, {
-      message: "email must be at least 5 characters.",
-    }),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof signUpFormSchema>>({
+    resolver: zodResolver(signUpFormSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -46,26 +31,9 @@ const SignUpForm = () => {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      await createUserWithEmailAndPassword(auth, values.email, values.password)
-        .then((userCredentials) => {
-          const uid = userCredentials.user.uid;
-          setDoc(doc(db, "users", uid), {
-            uid: uid,
-            firstName: values.firstName,
-            lastName: values.lastName,
-            email: values.email,
-            password: values.password,
-          });
-        })
-        .finally(() => {
-          navigate("/home");
-          form.reset();
-        });
-    } catch (e) {
-      console.error(e);
-    }
+  const onSubmit = async (values: z.infer<typeof signUpFormSchema>) => {
+    signUp(values.firstName, values.lastName, values.email, values.password);
+    navigate("/home");
   };
   return (
     <div className=" p-4 flex justify-center items-center h-screen w-full">

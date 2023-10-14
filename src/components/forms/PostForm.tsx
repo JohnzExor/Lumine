@@ -14,22 +14,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/components/ui/use-toast";
-import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "@/Firebase";
+import { auth } from "@/Firebase";
 import { useEffect, useState } from "react";
+import { useFirebaseServices } from "../store/useFirebase";
+import { postFormSchema } from "@/lib/types";
 
-type Props = {
-  updatePosts: () => void;
-};
-
-const FormSchema = z.object({
-  bio: z.string().min(1, {
-    message: "Bio must be at least 1 characters.",
-  }),
-});
-
-const PostForm = ({ updatePosts }: Props) => {
+const PostForm = () => {
+  const { addPost } = useFirebaseServices();
   const [hideID, setHideID] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -51,30 +42,17 @@ const PostForm = ({ updatePosts }: Props) => {
   };
 
   const uid = auth.currentUser?.uid;
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<z.infer<typeof postFormSchema>>({
+    resolver: zodResolver(postFormSchema),
     defaultValues: {
       bio: "",
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    const postID = Date.now().toString();
-
-    await setDoc(doc(db, "posts", postID), {
-      author: hideID ? `Lumine${uid?.slice(-5)}` : "Johnzyll Jimeno",
-      text: data.bio,
-      uid: uid,
-      postId: postID,
-    })
-      .then(() => {
-        toast({
-          description: "Your message has been sent.",
-        });
-        form.reset();
-        updatePosts();
-      })
-      .catch((e) => console.error(e));
+  const onSubmit = async (data: z.infer<typeof postFormSchema>) => {
+    const author = hideID ? `Lumine${uid?.slice(-5)}` : ``;
+    addPost(data.bio, author, uid);
+    form.reset();
   };
 
   return (

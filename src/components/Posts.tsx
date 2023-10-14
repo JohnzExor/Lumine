@@ -14,20 +14,20 @@ import { Button } from "@/components/ui/button";
 import { IoMdClose } from "react-icons/io";
 import { auth } from "@/Firebase";
 import { PostData } from "@/lib/types";
+import { useFirebaseServices } from "./store/useFirebase";
 
 type Props = {
   data: PostData;
-  handleDelete: () => void;
-  handleEdit: (documentId: string, text: string) => void;
 };
 
-const Posts = ({ data, handleDelete, handleEdit }: Props) => {
+const Posts = ({ data }: Props) => {
+  const { editPost, deletePost } = useFirebaseServices();
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState("");
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    handleEdit(data.postId, text);
+    editPost(data.postId, text);
     setIsEditing(false);
   };
 
@@ -78,7 +78,7 @@ const Posts = ({ data, handleDelete, handleEdit }: Props) => {
                   <DropdownMenuItem onClick={() => setIsEditing(true)}>
                     Edit
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleDelete}>
+                  <DropdownMenuItem onClick={() => deletePost(data.postId)}>
                     Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>

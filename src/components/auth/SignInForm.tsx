@@ -12,38 +12,23 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import { auth } from "@/Firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useFirebaseServices } from "../store/useFirebase";
+import { signInFormSchema } from "@/lib/types";
 
 const SignInForm = () => {
-  const navigate = useNavigate();
+  const { signIn } = useFirebaseServices();
 
-  const formSchema = z.object({
-    email: z.string().min(5, {
-      message: "email must be at least 5 characters.",
-    }),
-    password: z.string().min(5, {
-      message: "email must be at least 5 characters.",
-    }),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof signInFormSchema>>({
+    resolver: zodResolver(signInFormSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      await signInWithEmailAndPassword(auth, values.email, values.password)
-        .then(() => navigate("/home"))
-        .finally(() => form.reset());
-    } catch (e) {
-      console.error(e);
-    }
+  const onSubmit = (values: z.infer<typeof signInFormSchema>) => {
+    signIn(values.email, values.password);
   };
 
   return (

@@ -31,15 +31,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import { signOut } from "firebase/auth";
-import { auth } from "@/Firebase";
 import { UserData } from "@/lib/types";
+import { useFirebaseServices } from "./store/useFirebase";
 
 type Props = {
   userData: UserData[];
 };
 
 const NavigationBar = ({ userData }: Props) => {
+  const { signOut, currentUser } = useFirebaseServices();
   return (
     <nav className=" flex justify-between w-full fixed p-4 px-5 bg-slate-50">
       <label className="font-bold flex items-center gap-2">
@@ -48,7 +48,7 @@ const NavigationBar = ({ userData }: Props) => {
       </label>
       <Sheet>
         <SheetTrigger asChild>
-          {auth.currentUser && (
+          {currentUser && (
             <button>
               <FaBarsStaggered size={25} />
             </button>
@@ -66,7 +66,7 @@ const NavigationBar = ({ userData }: Props) => {
               {userData.map((data, index) => (
                 <label className=" text-xl" key={index}>
                   {data.firstName + " " + data.lastName}
-                  <p className=" text-xs">{auth.currentUser?.email}</p>
+                  <p className=" text-xs">{currentUser?.email}</p>
                 </label>
               ))}
             </div>
@@ -123,7 +123,7 @@ const NavigationBar = ({ userData }: Props) => {
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <SheetClose asChild>
-                    <AlertDialogAction onClick={() => signOut(auth)}>
+                    <AlertDialogAction onClick={() => signOut()}>
                       Continue
                     </AlertDialogAction>
                   </SheetClose>

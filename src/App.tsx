@@ -4,18 +4,17 @@ import Protected from "./components/Protected";
 import SignInForm from "./components/auth/SignInForm";
 import SignUpForm from "./components/auth/SignUpForm";
 
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "./Firebase";
 import { Toaster } from "./components/ui/toaster";
 import { collection, getDocs } from "firebase/firestore";
 import { UserData } from "./lib/types";
-
+import { useFirebaseServices } from "./components/store/useFirebase";
 const App = () => {
   const [userData, setUserData] = useState<UserData[]>([]);
-  const navigate = useNavigate();
+  const { initializeAuthStateListener } = useFirebaseServices();
 
   const fetchData = async () => {
     const querySnapshot = await getDocs(collection(db, "users"));
@@ -34,12 +33,8 @@ const App = () => {
   };
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        fetchData();
-        navigate("/home");
-      }
-    });
+    initializeAuthStateListener();
+    fetchData();
   }, []);
 
   return (
