@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const SideBar = () => {
-  const { userData, signOut } = useFirebaseServices();
+  const { userData, signOut, getUserData } = useFirebaseServices();
   return (
     <SheetContent>
       <SheetHeader>
@@ -98,7 +98,12 @@ const SideBar = () => {
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <SheetClose asChild>
-                <AlertDialogAction onClick={() => signOut()}>
+                <AlertDialogAction
+                  onClick={() => {
+                    signOut();
+                    getUserData();
+                  }}
+                >
                   Continue
                 </AlertDialogAction>
               </SheetClose>

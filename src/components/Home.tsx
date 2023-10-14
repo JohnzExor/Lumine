@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useFirebaseServices } from "./store/useFirebase";
 
 const Home = () => {
-  const { publicPosts, getPublicPosts } = useFirebaseServices();
+  const { publicPosts, getPublicPosts, getUserData } = useFirebaseServices();
   const [isLoading, setIsLoading] = useState(true);
 
   setTimeout(() => {
@@ -15,6 +15,7 @@ const Home = () => {
 
   useEffect(() => {
     getPublicPosts();
+    getUserData();
   }, []);
 
   return (
