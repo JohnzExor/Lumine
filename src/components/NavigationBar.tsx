@@ -33,11 +33,7 @@ import {
 
 import { signOut } from "firebase/auth";
 import { auth } from "@/Firebase";
-
-type UserData = {
-  firstName: string;
-  lastName: string;
-};
+import { UserData } from "@/lib/types";
 
 type Props = {
   userData: UserData[];
@@ -45,7 +41,7 @@ type Props = {
 
 const NavigationBar = ({ userData }: Props) => {
   return (
-    <nav className=" flex justify-between w-full fixed p-2.5 px-5">
+    <nav className=" flex justify-between w-full fixed p-4 px-5 bg-slate-50">
       <label className="font-bold flex items-center gap-2">
         <BsFillJournalBookmarkFill size={25} />
         Lumine

@@ -47,9 +47,10 @@ const SignInForm = () => {
   };
 
   return (
-    <div className=" p-4 flex justify-center items-center h-screen">
+    <div className=" p-4 flex justify-center items-center h-screen w-full">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <h1 className=" text-center text-3xl">Login your Account</h1>
           <FormField
             control={form.control}
             name="email"

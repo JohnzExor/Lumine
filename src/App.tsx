@@ -4,22 +4,18 @@ import Protected from "./components/Protected";
 import SignInForm from "./components/auth/SignInForm";
 import SignUpForm from "./components/auth/SignUpForm";
 
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "./Firebase";
 import { Toaster } from "./components/ui/toaster";
 import { collection, getDocs } from "firebase/firestore";
-
-type UserData = {
-  firstName: string;
-  lastName: string;
-  uid: string;
-};
+import { UserData } from "./lib/types";
 
 const App = () => {
   const [userData, setUserData] = useState<UserData[]>([]);
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     const querySnapshot = await getDocs(collection(db, "users"));
@@ -38,10 +34,14 @@ const App = () => {
   };
 
   useEffect(() => {
-    onAuthStateChanged(auth, () => {
-      fetchData();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        fetchData();
+        navigate("/home");
+      }
     });
   }, []);
+
   return (
     <div>
       <NavigationBar userData={userData} />
@@ -59,9 +59,7 @@ const App = () => {
         <Route
           path="*"
           element={
-            <div className="flex justify-center items-center h-screen">
-              <img src="./src/assets/404.svg" />
-            </div>
+            <div className="flex justify-center items-center h-screen bg-[url('/src/assets/404.svg')]"></div>
           }
         />
       </Routes>

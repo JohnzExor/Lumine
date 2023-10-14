@@ -35,7 +35,7 @@ const Home = () => {
       fetchedData.push(postData);
     });
 
-    setData(fetchedData);
+    setData(fetchedData.reverse());
     setIsLoading(false);
   };
 

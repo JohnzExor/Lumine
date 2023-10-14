@@ -13,16 +13,10 @@ import { Button } from "@/components/ui/button";
 
 import { IoMdClose } from "react-icons/io";
 import { auth } from "@/Firebase";
-
-type Data = {
-  postId: string;
-  author: string;
-  text: string;
-  uid: string;
-};
+import { PostData } from "@/lib/types";
 
 type Props = {
-  data: Data;
+  data: PostData;
   handleDelete: () => void;
   handleEdit: (documentId: string, text: string) => void;
 };

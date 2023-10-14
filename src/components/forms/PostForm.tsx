@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+
 import {
   Form,
   FormControl,
@@ -15,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/Firebase";
+import { useEffect, useState } from "react";
 
 type Props = {
   updatePosts: () => void;
@@ -27,6 +30,27 @@ const FormSchema = z.object({
 });
 
 const PostForm = ({ updatePosts }: Props) => {
+  const [hideID, setHideID] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const hideIDLocal = localStorage.getItem("hideId");
+    if (hideIDLocal === "true") setHideID(true);
+    else {
+      setHideID(false);
+    }
+  }, [hideID]);
+
+  const onClickHideID = () => {
+    if (hideID === false) {
+      localStorage.setItem("hideId", "true");
+      setHideID(true);
+    } else {
+      localStorage.setItem("hideId", "false");
+      setHideID(false);
+    }
+  };
+
+  const uid = auth.currentUser?.uid;
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -35,25 +59,17 @@ const PostForm = ({ updatePosts }: Props) => {
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    const uid = auth.currentUser?.uid;
     const postID = Date.now().toString();
 
     await setDoc(doc(db, "posts", postID), {
-      author: `Lumine${uid?.slice(-5)}`,
+      author: hideID ? `Lumine${uid?.slice(-5)}` : "Johnzyll Jimeno",
       text: data.bio,
       uid: uid,
       postId: postID,
     })
       .then(() => {
         toast({
-          title: "You submitted the following values:",
-          description: (
-            <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-              <code className="text-white">
-                {JSON.stringify(data, null, 2)}
-              </code>
-            </pre>
-          ),
+          description: "Your message has been sent.",
         });
         form.reset();
         updatePosts();
@@ -70,7 +86,26 @@ const PostForm = ({ updatePosts }: Props) => {
             name="bio"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Bio</FormLabel>
+                <div className="flex items-center">
+                  <FormLabel>Bio</FormLabel>
+                  <div className="ml-auto items-center flex gap-2 text-sm">
+                    <label
+                      htmlFor="hide-name"
+                      className={!hideID ? "" : " opacity-30"}
+                    >
+                      Post as{" "}
+                      <span className=" font-medium">
+                        Lumine{uid?.slice(-5)}?
+                      </span>
+                    </label>
+                    <Switch
+                      checked={hideID as boolean}
+                      onCheckedChange={() => onClickHideID()}
+                      aria-readonly
+                    />
+                  </div>
+                </div>
+
                 <FormControl>
                   <Textarea
                     placeholder="Tell us a little bit about yourself"

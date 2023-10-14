@@ -12,16 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@radix-ui/react-popover";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
 
-import { Calendar as CalendarIcon } from "lucide-react";
-import { Calendar } from "../ui/calendar";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "@/Firebase";
 import { doc, setDoc } from "firebase/firestore";
@@ -36,9 +27,6 @@ const SignUpForm = () => {
     }),
     lastName: z.string().min(2, {
       message: "email must be at least 5 characters.",
-    }),
-    birthDate: z.date({
-      required_error: "A date of birth is required.",
     }),
     email: z.string().min(2, {
       message: "email must be at least 5 characters.",
@@ -80,9 +68,10 @@ const SignUpForm = () => {
     }
   };
   return (
-    <div className=" p-4 flex justify-center items-center h-screen">
+    <div className=" p-4 flex justify-center items-center h-screen w-full">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <h1 className=" text-center text-3xl">Create an Account</h1>
           <FormField
             control={form.control}
             name="firstName"
@@ -105,48 +94,6 @@ const SignUpForm = () => {
                 <FormControl>
                   <Input placeholder="Enter your last name" {...field} />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="birthDate"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Date of birth</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                      className=" bg-white border-black border"
-                    />
-                  </PopoverContent>
-                </Popover>
                 <FormMessage />
               </FormItem>
             )}
