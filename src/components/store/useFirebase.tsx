@@ -1,6 +1,13 @@
 import { auth, db } from "@/Firebase";
-import { Firebase } from "@/lib/types";
-import { deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore";
+import { Firebase, PostData } from "@/lib/types";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { create } from "zustand";
 import { toast } from "../ui/use-toast";
 import {
@@ -12,6 +19,8 @@ import {
 
 export const useFirebaseServices = create<Firebase>((set) => ({
   currentUser: null,
+  userData: [],
+  publicPosts: [],
 
   signIn: async (email: string, password: string) => {
     await signInWithEmailAndPassword(auth, email, password);
@@ -43,8 +52,34 @@ export const useFirebaseServices = create<Firebase>((set) => ({
 
   initializeAuthStateListener: () => {
     onAuthStateChanged(auth, (user) => {
-      set({ currentUser: user });
+      if (user) {
+        set({ currentUser: user });
+      } else {
+        set({ userData: [] });
+      }
     });
+  },
+
+  getUserData: async () => {
+    const querySnapshot = await getDocs(collection(db, "users"));
+
+    querySnapshot.forEach((doc) => {
+      const postData = doc.data();
+      if (postData.uid === auth.currentUser?.uid) {
+        set({ userData: postData });
+      }
+    });
+  },
+
+  getPublicPosts: async () => {
+    const querySnapshot = await getDocs(collection(db, "posts"));
+    const fetchedData: PostData[] = [];
+
+    querySnapshot.forEach((doc) => {
+      const postData = doc.data() as PostData;
+      fetchedData.push(postData);
+    });
+    set({ publicPosts: fetchedData.reverse() });
   },
 
   addPost: async (text: string, author: string, uid: string | undefined) => {

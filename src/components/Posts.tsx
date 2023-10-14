@@ -15,13 +15,14 @@ import { IoMdClose } from "react-icons/io";
 import { auth } from "@/Firebase";
 import { PostData } from "@/lib/types";
 import { useFirebaseServices } from "./store/useFirebase";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type Props = {
   data: PostData;
 };
 
 const Posts = ({ data }: Props) => {
-  const { editPost, deletePost } = useFirebaseServices();
+  const { editPost, deletePost, getPublicPosts } = useFirebaseServices();
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState("");
 
@@ -29,6 +30,7 @@ const Posts = ({ data }: Props) => {
     e.preventDefault();
     editPost(data.postId, text);
     setIsEditing(false);
+    getPublicPosts();
   };
 
   return (
@@ -36,10 +38,23 @@ const Posts = ({ data }: Props) => {
       <div className=" border rounded-md p-3 w-80">
         <div className=" flex">
           <div className="space-y-1">
-            <h4 className="text-sm font-medium leading-none">
-              {data.author}
-              {data.uid === auth.currentUser?.uid && " (You)"}
-            </h4>
+            <div className="flex items-center gap-1">
+              <Avatar>
+                <AvatarImage
+                  src={
+                    data.uid === auth.currentUser?.uid
+                      ? "https://github.com/shadcn.png"
+                      : ""
+                  }
+                />
+                <AvatarFallback>{data.author.substring(0, 1)}</AvatarFallback>
+              </Avatar>
+              <h4 className="text-sm font-medium leading-none">
+                {data.author}
+                {data.uid === auth.currentUser?.uid && " (You)"}
+              </h4>
+            </div>
+
             {isEditing ? (
               <form onSubmit={onSubmit} className=" w-64">
                 <textarea
@@ -61,7 +76,7 @@ const Posts = ({ data }: Props) => {
                 </footer>
               </form>
             ) : (
-              <p className="text-sm text-muted-foreground break-words w-60">
+              <p className="text-sm text-muted-foreground break-words w-full">
                 {data.text}
               </p>
             )}
@@ -78,7 +93,12 @@ const Posts = ({ data }: Props) => {
                   <DropdownMenuItem onClick={() => setIsEditing(true)}>
                     Edit
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => deletePost(data.postId)}>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      deletePost(data.postId);
+                      getPublicPosts();
+                    }}
+                  >
                     Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>

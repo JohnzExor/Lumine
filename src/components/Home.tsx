@@ -1,40 +1,20 @@
 import { useEffect, useState } from "react";
 import Posts from "./Posts";
 import PostForm from "./forms/PostForm";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/Firebase";
 
 import { Skeleton } from "@/components/ui/skeleton";
-
-type Data = {
-  postId: string;
-  author: string;
-  text: string;
-  uid: string;
-};
+import { useFirebaseServices } from "./store/useFirebase";
 
 const Home = () => {
-  const [data, setData] = useState<Data[]>([]);
+  const { publicPosts, getPublicPosts } = useFirebaseServices();
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchData = async () => {
-    setIsLoading(true);
-    const querySnapshot = await getDocs(collection(db, "posts"));
-    const fetchedData: Data[] = [];
-
-    console.log(querySnapshot);
-
-    querySnapshot.forEach((doc) => {
-      const postData = doc.data() as Data;
-      fetchedData.push(postData);
-    });
-
-    setData(fetchedData.reverse());
+  setTimeout(() => {
     setIsLoading(false);
-  };
+  }, 1000);
 
   useEffect(() => {
-    fetchData();
+    getPublicPosts();
   }, []);
 
   return (
@@ -49,7 +29,7 @@ const Home = () => {
           </div>
         </div>
       ) : (
-        data.map((data, index) => <Posts data={data} key={index} />)
+        publicPosts.map((data, index) => <Posts data={data} key={index} />)
       )}
     </div>
   );

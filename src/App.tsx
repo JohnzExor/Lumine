@@ -6,40 +6,20 @@ import SignUpForm from "./components/auth/SignUpForm";
 
 import { Route, Routes } from "react-router-dom";
 
-import { useEffect, useState } from "react";
-import { auth, db } from "./Firebase";
+import { useEffect } from "react";
 import { Toaster } from "./components/ui/toaster";
-import { collection, getDocs } from "firebase/firestore";
-import { UserData } from "./lib/types";
 import { useFirebaseServices } from "./components/store/useFirebase";
 const App = () => {
-  const [userData, setUserData] = useState<UserData[]>([]);
-  const { initializeAuthStateListener } = useFirebaseServices();
-
-  const fetchData = async () => {
-    const querySnapshot = await getDocs(collection(db, "users"));
-    const fetchedData: UserData[] = [];
-
-    console.log(querySnapshot);
-
-    querySnapshot.forEach((doc) => {
-      const postData = doc.data() as UserData;
-      if (postData.uid === auth.currentUser?.uid) {
-        fetchedData.push(postData);
-      }
-    });
-
-    setUserData(fetchedData);
-  };
+  const { initializeAuthStateListener, getUserData } = useFirebaseServices();
 
   useEffect(() => {
     initializeAuthStateListener();
-    fetchData();
+    getUserData();
   }, []);
 
   return (
     <div>
-      <NavigationBar userData={userData} />
+      <NavigationBar />
       <Routes>
         <Route
           path="/home"

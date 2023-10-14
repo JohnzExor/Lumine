@@ -1,4 +1,5 @@
 import { User } from "firebase/auth";
+import { DocumentData } from "firebase/firestore";
 import { z } from "zod";
 
 export type UserData = {
@@ -16,6 +17,9 @@ export type PostData = {
 
 export type Firebase = {
   currentUser: User | null;
+  userData: DocumentData;
+  publicPosts: PostData[];
+  getUserData: () => void;
   signIn: (email: string, password: string) => void;
   signUp: (
     firstName: string,
@@ -25,6 +29,7 @@ export type Firebase = {
   ) => void;
   signOut: () => void;
   initializeAuthStateListener: () => void;
+  getPublicPosts: () => void;
   addPost: (text: string, author: string, uid: string | undefined) => void;
   editPost: (documentID: string, text: string) => void;
   deletePost: (documentID: string) => void;
