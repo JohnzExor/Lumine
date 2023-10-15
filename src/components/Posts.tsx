@@ -22,7 +22,7 @@ type Props = {
 };
 
 const Posts = ({ data }: Props) => {
-  const { editPost, deletePost, getPublicPosts } = useFirebaseServices();
+  const { editPost, deletePost } = useFirebaseServices();
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState("");
 
@@ -30,7 +30,7 @@ const Posts = ({ data }: Props) => {
     e.preventDefault();
     editPost(data.postId, text);
     setIsEditing(false);
-    getPublicPosts();
+    console.log(data.createdAt);
   };
 
   return (
@@ -38,21 +38,20 @@ const Posts = ({ data }: Props) => {
       <div className=" border rounded-md p-3 w-80">
         <div className=" flex">
           <div className="space-y-1">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               <Avatar>
-                <AvatarImage
-                  src={
-                    data.uid === auth.currentUser?.uid
-                      ? "https://github.com/shadcn.png"
-                      : ""
-                  }
-                />
-                <AvatarFallback>{data.author.substring(0, 1)}</AvatarFallback>
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback className=" font-bold uppercase">
+                  {data.author.substring(0, 1)}
+                </AvatarFallback>
               </Avatar>
-              <h4 className="text-sm font-medium leading-none">
-                {data.author}
-                {data.uid === auth.currentUser?.uid && " (You)"}
-              </h4>
+              <div>
+                <h4 className="text-sm font-medium leading-none">
+                  {data.author}
+                  {data.uid === auth.currentUser?.uid && " (You)"}
+                </h4>
+                <p className=" text-xs">{data.createdAt}</p>
+              </div>
             </div>
 
             {isEditing ? (
@@ -93,12 +92,7 @@ const Posts = ({ data }: Props) => {
                   <DropdownMenuItem onClick={() => setIsEditing(true)}>
                     Edit
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      deletePost(data.postId);
-                      getPublicPosts();
-                    }}
-                  >
+                  <DropdownMenuItem onClick={() => deletePost(data.postId)}>
                     Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>

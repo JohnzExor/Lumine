@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useFirebaseServices } from "./store/useFirebase";
 
 const Home = () => {
-  const { publicPosts, getPublicPosts, getUserData } = useFirebaseServices();
+  const { publicPosts, getUserData, getPublicPosts } = useFirebaseServices();
   const [isLoading, setIsLoading] = useState(true);
 
   setTimeout(() => {

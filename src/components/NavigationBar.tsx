@@ -3,11 +3,10 @@ import { BsFillJournalBookmarkFill } from "react-icons/bs";
 
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 
-import { useFirebaseServices } from "./store/useFirebase";
 import SideBar from "./SideBar";
+import { auth } from "@/Firebase";
 
 const NavigationBar = () => {
-  const { currentUser } = useFirebaseServices();
   return (
     <nav className=" flex justify-between w-full fixed p-4 px-5 bg-slate-50">
       <label className="font-bold flex items-center gap-2">
@@ -16,7 +15,7 @@ const NavigationBar = () => {
       </label>
       <Sheet>
         <SheetTrigger asChild>
-          {currentUser && (
+          {auth.currentUser && (
             <button>
               <FaBarsStaggered size={25} />
             </button>

@@ -5,6 +5,7 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  onSnapshot,
   setDoc,
   updateDoc,
 } from "firebase/firestore";
@@ -16,7 +17,6 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
 
 export const useFirebaseServices = create<Firebase>((set) => ({
   currentUser: null,
@@ -73,24 +73,36 @@ export const useFirebaseServices = create<Firebase>((set) => ({
   },
 
   getPublicPosts: async () => {
-    const querySnapshot = await getDocs(collection(db, "posts"));
-    const fetchedData: PostData[] = [];
+    const unsubscribe = await onSnapshot(
+      collection(db, "posts"),
+      (snapshot) => {
+        const fetchedData: PostData[] = [];
 
-    querySnapshot.forEach((doc) => {
-      const postData = doc.data() as PostData;
-      fetchedData.push(postData);
-    });
-    set({ publicPosts: fetchedData.reverse() });
+        snapshot.forEach((doc) => {
+          const postData = doc.data() as PostData;
+          fetchedData.push(postData);
+        });
+        set({ publicPosts: fetchedData.reverse() });
+        console.log("new post");
+      }
+    );
+    return () => {
+      unsubscribe();
+    };
   },
 
   addPost: async (text: string, author: string, uid: string | undefined) => {
     const postID = Date.now().toString();
+    const currentDate = new Date();
+    const currentDateAndTime = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
 
     await setDoc(doc(db, "posts", postID), {
       author: author,
       text: text,
       uid: uid,
       postId: postID,
+      createdAt: currentDateAndTime,
+      updatedAt: "",
     })
       .then(() => {
         toast({
@@ -103,10 +115,14 @@ export const useFirebaseServices = create<Firebase>((set) => ({
   editPost: async (documentId: string, text: string) => {
     await updateDoc(doc(db, "posts", documentId), {
       text: text,
+    }).then(() => {
+      toast({ description: "Edited Successfully" });
     });
   },
 
   deletePost: async (documentId: string) => {
-    await deleteDoc(doc(db, "posts", documentId)).then(() => {});
+    await deleteDoc(doc(db, "posts", documentId)).then(() => {
+      toast({ description: "Deleted Sucessfully" });
+    });
   },
 }));

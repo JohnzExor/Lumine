@@ -6,6 +6,7 @@ export type UserData = {
   firstName: string;
   lastName: string;
   uid: string;
+  email: string;
 };
 
 export type PostData = {
@@ -13,6 +14,8 @@ export type PostData = {
   author: string;
   text: string;
   uid: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Firebase = {

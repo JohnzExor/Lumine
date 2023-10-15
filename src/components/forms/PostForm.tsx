@@ -20,7 +20,7 @@ import { useFirebaseServices } from "../store/useFirebase";
 import { postFormSchema } from "@/lib/types";
 
 const PostForm = () => {
-  const { addPost, userData, getPublicPosts } = useFirebaseServices();
+  const { addPost, userData } = useFirebaseServices();
   const [hideID, setHideID] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -55,7 +55,6 @@ const PostForm = () => {
       : `${userData.firstName} ${userData.lastName}`;
     addPost(data.bio, author, uid);
     form.reset();
-    getPublicPosts();
   };
 
   return (

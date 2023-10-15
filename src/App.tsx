@@ -14,6 +14,7 @@ import { auth } from "./Firebase";
 const App = () => {
   const { initializeAuthStateListener, getUserData } = useFirebaseServices();
   const navigate = useNavigate();
+
   useEffect(() => {
     initializeAuthStateListener();
     getUserData();
