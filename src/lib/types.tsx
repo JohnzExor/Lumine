@@ -21,6 +21,7 @@ export type PostData = {
 export type Firebase = {
   currentUser: User | null;
   userData: DocumentData;
+  userPosts: PostData[];
   publicPosts: PostData[];
   getUserData: () => void;
   signIn: (email: string, password: string) => void;
@@ -32,6 +33,7 @@ export type Firebase = {
   ) => void;
   signOut: () => void;
   initializeAuthStateListener: () => void;
+  getUserPosts: () => void;
   getPublicPosts: () => void;
   addPost: (text: string, author: string, uid: string | undefined) => void;
   editPost: (documentID: string, text: string) => void;
@@ -40,30 +42,30 @@ export type Firebase = {
 
 export const signUpFormSchema = z.object({
   firstName: z.string().min(2, {
-    message: "email must be at least 5 characters.",
+    message: "First Name must be at least 5 characters.",
   }),
   lastName: z.string().min(2, {
-    message: "email must be at least 5 characters.",
+    message: "Last Name must be at least 5 characters.",
   }),
   email: z.string().min(2, {
-    message: "email must be at least 5 characters.",
+    message: "Email must be at least 5 characters.",
   }),
   password: z.string().min(2, {
-    message: "email must be at least 5 characters.",
+    message: "Password must be at least 5 characters.",
   }),
 });
 
 export const signInFormSchema = z.object({
   email: z.string().min(5, {
-    message: "email must be at least 5 characters.",
+    message: "Email must be at least 5 characters.",
   }),
   password: z.string().min(5, {
-    message: "email must be at least 5 characters.",
+    message: "Password must be at least 5 characters.",
   }),
 });
 
 export const postFormSchema = z.object({
   bio: z.string().min(1, {
-    message: "Bio must be at least 1 characters.",
+    message: "Bio must be at least 1 character.",
   }),
 });

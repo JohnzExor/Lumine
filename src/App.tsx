@@ -11,6 +11,7 @@ import { Toaster } from "./components/ui/toaster";
 import { useFirebaseServices } from "./components/store/useFirebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Firebase";
+import Profile from "./components/Profile";
 const App = () => {
   const { initializeAuthStateListener, getUserData } = useFirebaseServices();
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ const App = () => {
         />
         <Route path="/" element={<SignInForm />} />
         <Route path="/signup" element={<SignUpForm />} />
+        <Route path="/profile" element={<Profile />} />
         <Route
           path="*"
           element={

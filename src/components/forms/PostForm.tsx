@@ -58,7 +58,7 @@ const PostForm = () => {
   };
 
   return (
-    <div className="flex justify-center pt-16">
+    <div className="flex justify-center">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-80 space-y-2">
           <FormField

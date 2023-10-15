@@ -19,7 +19,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
+    <div className="pt-16">
       <PostForm />
       {isLoading ? (
         <div className="flex justify-center items-center space-x-4 pt-8">

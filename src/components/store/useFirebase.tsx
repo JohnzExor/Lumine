@@ -21,6 +21,7 @@ import {
 export const useFirebaseServices = create<Firebase>((set) => ({
   currentUser: null,
   userData: [],
+  userPosts: [],
   publicPosts: [],
 
   signIn: async (email: string, password: string) => {
@@ -72,6 +73,27 @@ export const useFirebaseServices = create<Firebase>((set) => ({
     });
   },
 
+  getUserPosts: async () => {
+    const unsubscribe = await onSnapshot(
+      collection(db, "posts"),
+      (snapshot) => {
+        const fetchedData: PostData[] = [];
+
+        snapshot.forEach((doc) => {
+          const postData = doc.data() as PostData;
+          if (postData.uid === auth.currentUser?.uid) {
+            fetchedData.push(postData);
+          }
+        });
+        set({ userPosts: fetchedData.reverse() });
+        console.log("new user posts");
+      }
+    );
+    return () => {
+      unsubscribe();
+    };
+  },
+
   getPublicPosts: async () => {
     const unsubscribe = await onSnapshot(
       collection(db, "posts"),
@@ -83,7 +105,7 @@ export const useFirebaseServices = create<Firebase>((set) => ({
           fetchedData.push(postData);
         });
         set({ publicPosts: fetchedData.reverse() });
-        console.log("new post");
+        console.log("new public posts");
       }
     );
     return () => {
