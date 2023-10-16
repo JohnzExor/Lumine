@@ -17,6 +17,9 @@ import { PostData } from "@/lib/types";
 import { useFirebaseServices } from "./store/useFirebase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+import { FaGlobeAmericas } from "react-icons/fa";
+import { BsPersonFillLock } from "react-icons/bs";
+
 type Props = {
   data: PostData;
 };
@@ -30,7 +33,6 @@ const Posts = ({ data }: Props) => {
     e.preventDefault();
     editPost(data.postId, text);
     setIsEditing(false);
-    console.log(data.createdAt);
   };
 
   return (
@@ -46,9 +48,13 @@ const Posts = ({ data }: Props) => {
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h4 className="text-sm font-medium leading-none">
+                <h4 className="text-sm font-medium leading-none flex gap-1">
                   {data.author}
-                  {data.uid === auth.currentUser?.uid && " (You)"}
+                  {data.privacy === "Public" ? (
+                    <FaGlobeAmericas />
+                  ) : (
+                    <BsPersonFillLock />
+                  )}
                 </h4>
                 <p className=" text-xs">{data.createdAt}</p>
               </div>

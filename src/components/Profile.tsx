@@ -1,19 +1,12 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useFirebaseServices } from "./store/useFirebase";
 import PostForm from "./forms/PostForm";
-import { useEffect } from "react";
 import Posts from "./Posts";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const Profile = () => {
-  const { getUserPosts, userPosts } = useFirebaseServices();
-
-  useEffect(() => {
-    getUserPosts();
-  }, []);
-
-  const { userData } = useFirebaseServices();
+  const { userPostsData, userData } = useFirebaseServices();
   return (
     <div className=" flex flex-col justify-center pt-16 w-full h-auto">
       <div className=" flex flex-col items-center mb-2">
@@ -30,7 +23,7 @@ const Profile = () => {
       </div>
       <div>
         <PostForm />
-        {userPosts.map((data, index) => (
+        {userPostsData.map((data, index) => (
           <Posts data={data} key={index} />
         ))}
       </div>

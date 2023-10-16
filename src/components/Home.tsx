@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Posts from "./Posts";
 import PostForm from "./forms/PostForm";
 
@@ -6,17 +6,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useFirebaseServices } from "./store/useFirebase";
 
 const Home = () => {
-  const { publicPosts, getUserData, getPublicPosts } = useFirebaseServices();
+  const { postsData } = useFirebaseServices();
   const [isLoading, setIsLoading] = useState(true);
 
   setTimeout(() => {
     setIsLoading(false);
   }, 1000);
-
-  useEffect(() => {
-    getPublicPosts();
-    getUserData();
-  }, []);
 
   return (
     <div className="pt-16">
@@ -30,7 +25,7 @@ const Home = () => {
           </div>
         </div>
       ) : (
-        publicPosts.map((data, index) => <Posts data={data} key={index} />)
+        postsData.map((data, index) => <Posts data={data} key={index} />)
       )}
     </div>
   );

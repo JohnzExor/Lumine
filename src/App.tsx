@@ -13,17 +13,21 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Firebase";
 import Profile from "./components/Profile";
 const App = () => {
-  const { initializeAuthStateListener, getUserData } = useFirebaseServices();
+  const { initializeAuthStateListener, getUserData, getPostsData } =
+    useFirebaseServices();
   const navigate = useNavigate();
 
   useEffect(() => {
     initializeAuthStateListener();
-    getUserData();
+
     onAuthStateChanged(auth, (user) => {
       if (user) {
         navigate("/home");
+        getPostsData();
+        getUserData();
       } else {
         navigate("/");
+        getUserData();
       }
     });
   }, []);

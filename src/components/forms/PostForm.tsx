@@ -10,21 +10,48 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+
 import { Textarea } from "@/components/ui/textarea";
 import { auth } from "@/Firebase";
 import { useEffect, useState } from "react";
 import { useFirebaseServices } from "../store/useFirebase";
 import { postFormSchema } from "@/lib/types";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { RiArrowDropDownLine } from "react-icons/ri";
+
+import { FaGlobeAmericas } from "react-icons/fa";
+import { BsPersonFillLock } from "react-icons/bs";
+
 const PostForm = () => {
   const { addPost, userData } = useFirebaseServices();
   const [hideID, setHideID] = useState<boolean | null>(null);
+  const [isPrivate, setIsPrivate] = useState(false);
+
+  const privacy = isPrivate ? (
+    <div className="flex gap-1 items-center">
+      <BsPersonFillLock />
+      Private
+    </div>
+  ) : (
+    <div className="flex gap-1 items-center">
+      <FaGlobeAmericas />
+      Public
+    </div>
+  );
 
   useEffect(() => {
     const hideIDLocal = localStorage.getItem("hideId");
+
     if (hideIDLocal === "true") setHideID(true);
     else {
       setHideID(false);
@@ -50,10 +77,12 @@ const PostForm = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof postFormSchema>) => {
+    console.log(isPrivate);
     const author = hideID
       ? `Lumine${uid?.slice(-5)}`
       : `${userData.firstName} ${userData.lastName}`;
-    addPost(data.bio, author, uid);
+    const privacy = isPrivate ? "Private" : "Public";
+    addPost(data.bio, author, uid, privacy);
     form.reset();
   };
 
@@ -67,7 +96,30 @@ const PostForm = () => {
             render={({ field }) => (
               <FormItem>
                 <div className="flex items-center">
-                  <FormLabel>Bio</FormLabel>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="flex items-center border rounded-md px-2 py-0.5">
+                      <RiArrowDropDownLine size={25} />
+                      {privacy}
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel>Privacy</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => setIsPrivate(false)}
+                        className="flex gap-1"
+                      >
+                        <FaGlobeAmericas />
+                        Public
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => setIsPrivate(true)}
+                        className="flex gap-1"
+                      >
+                        <BsPersonFillLock />
+                        Private
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                   <div className="ml-auto items-center flex gap-2 text-sm">
                     <label
                       htmlFor="hide-name"
@@ -97,8 +149,8 @@ const PostForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit" className=" w-full">
-            Submit
+          <Button type="submit" className="w-full">
+            Post as {isPrivate ? "Private" : "Public"}
           </Button>
         </form>
       </Form>

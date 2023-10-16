@@ -16,13 +16,14 @@ export type PostData = {
   uid: string;
   createdAt: string;
   updatedAt: string;
+  privacy: string;
 };
 
 export type Firebase = {
   currentUser: User | null;
   userData: DocumentData;
-  userPosts: PostData[];
-  publicPosts: PostData[];
+  userPostsData: PostData[];
+  postsData: PostData[];
   getUserData: () => void;
   signIn: (email: string, password: string) => void;
   signUp: (
@@ -33,9 +34,13 @@ export type Firebase = {
   ) => void;
   signOut: () => void;
   initializeAuthStateListener: () => void;
-  getUserPosts: () => void;
-  getPublicPosts: () => void;
-  addPost: (text: string, author: string, uid: string | undefined) => void;
+  getPostsData: () => void;
+  addPost: (
+    text: string,
+    author: string,
+    uid: string | undefined,
+    privacy: string
+  ) => void;
   editPost: (documentID: string, text: string) => void;
   deletePost: (documentID: string) => void;
 };

@@ -21,8 +21,8 @@ import {
 export const useFirebaseServices = create<Firebase>((set) => ({
   currentUser: null,
   userData: [],
-  userPosts: [],
-  publicPosts: [],
+  userPostsData: [],
+  postsData: [],
 
   signIn: async (email: string, password: string) => {
     await signInWithEmailAndPassword(auth, email, password);
@@ -73,38 +73,27 @@ export const useFirebaseServices = create<Firebase>((set) => ({
     });
   },
 
-  getUserPosts: async () => {
+  getPostsData: async () => {
     const unsubscribe = await onSnapshot(
       collection(db, "posts"),
       (snapshot) => {
-        const fetchedData: PostData[] = [];
+        const fetchedPostsData: PostData[] = [];
+        const fetchedUserPostsData: PostData[] = [];
 
         snapshot.forEach((doc) => {
           const postData = doc.data() as PostData;
+
+          if (postData.privacy === "Public") {
+            fetchedPostsData.push(postData);
+          }
+
           if (postData.uid === auth.currentUser?.uid) {
-            fetchedData.push(postData);
+            fetchedUserPostsData.push(postData);
           }
         });
-        set({ userPosts: fetchedData.reverse() });
-        console.log("new user posts");
-      }
-    );
-    return () => {
-      unsubscribe();
-    };
-  },
+        set({ userPostsData: fetchedUserPostsData.reverse() });
+        set({ postsData: fetchedPostsData.reverse() });
 
-  getPublicPosts: async () => {
-    const unsubscribe = await onSnapshot(
-      collection(db, "posts"),
-      (snapshot) => {
-        const fetchedData: PostData[] = [];
-
-        snapshot.forEach((doc) => {
-          const postData = doc.data() as PostData;
-          fetchedData.push(postData);
-        });
-        set({ publicPosts: fetchedData.reverse() });
         console.log("new public posts");
       }
     );
@@ -113,7 +102,12 @@ export const useFirebaseServices = create<Firebase>((set) => ({
     };
   },
 
-  addPost: async (text: string, author: string, uid: string | undefined) => {
+  addPost: async (
+    text: string,
+    author: string,
+    uid: string | undefined,
+    privacy
+  ) => {
     const postID = Date.now().toString();
     const currentDate = new Date();
     const currentDateAndTime = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
@@ -125,6 +119,7 @@ export const useFirebaseServices = create<Firebase>((set) => ({
       postId: postID,
       createdAt: currentDateAndTime,
       updatedAt: "",
+      privacy: privacy,
     })
       .then(() => {
         toast({
