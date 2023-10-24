@@ -12,12 +12,21 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFirebaseServices } from "../store/useFirebase";
 import { signInFormSchema } from "@/lib/types";
+import { useEffect } from "react";
+import { auth } from "@/Firebase";
 
 const SignInForm = () => {
   const { signIn } = useFirebaseServices();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (auth.currentUser) {
+      navigate("/home");
+    }
+  }, [auth.currentUser]);
 
   const form = useForm<z.infer<typeof signInFormSchema>>({
     resolver: zodResolver(signInFormSchema),

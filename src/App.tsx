@@ -22,7 +22,6 @@ const App = () => {
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigate("/home");
         getPostsData();
         getUserData();
       } else {
@@ -46,7 +45,7 @@ const App = () => {
         />
         <Route path="/" element={<SignInForm />} />
         <Route path="/signup" element={<SignUpForm />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/:uid/*" element={<Profile />} />
         <Route
           path="*"
           element={

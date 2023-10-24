@@ -89,7 +89,10 @@ const PostForm = () => {
   return (
     <div className="flex justify-center">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-80 space-y-2">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="md:w-1/3 w-80 space-y-2"
+        >
           <FormField
             control={form.control}
             name="bio"
@@ -150,7 +153,7 @@ const PostForm = () => {
             )}
           />
           <Button type="submit" className="w-full">
-            Post as {isPrivate ? "Private" : "Public"}
+            Post in {isPrivate ? "Private" : "Public"}
           </Button>
         </form>
       </Form>

@@ -16,10 +16,18 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useFirebaseServices } from "../store/useFirebase";
 import { signUpFormSchema } from "@/lib/types";
+import { useEffect } from "react";
+import { auth } from "@/Firebase";
 
 const SignUpForm = () => {
   const navigate = useNavigate();
   const { signUp } = useFirebaseServices();
+
+  useEffect(() => {
+    if (auth.currentUser) {
+      navigate("/home");
+    }
+  }, [auth.currentUser]);
 
   const form = useForm<z.infer<typeof signUpFormSchema>>({
     resolver: zodResolver(signUpFormSchema),

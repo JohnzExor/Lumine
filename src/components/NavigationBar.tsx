@@ -1,7 +1,7 @@
 import { FaBarsStaggered } from "react-icons/fa6";
 import { BsFillJournalBookmarkFill } from "react-icons/bs";
 
-import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 import SideBar from "./SideBar";
 import { auth } from "@/Firebase";
@@ -13,16 +13,20 @@ const NavigationBar = () => {
         <BsFillJournalBookmarkFill size={25} />
         Lumine
       </label>
-      <Sheet>
-        <SheetTrigger asChild>
-          {auth.currentUser && (
-            <button>
-              <FaBarsStaggered size={25} />
-            </button>
-          )}
-        </SheetTrigger>
-        <SideBar />
-      </Sheet>
+      <div className="block md:hidden">
+        <Sheet>
+          <SheetTrigger asChild>
+            {auth.currentUser && (
+              <button className=" hidden max-md:block">
+                <FaBarsStaggered size={25} />
+              </button>
+            )}
+          </SheetTrigger>
+          <SheetContent>
+            <SideBar />
+          </SheetContent>
+        </Sheet>
+      </div>
     </nav>
   );
 };

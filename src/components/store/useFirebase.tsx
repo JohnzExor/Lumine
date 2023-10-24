@@ -21,10 +21,11 @@ import {
 export const useFirebaseServices = create<Firebase>((set) => ({
   currentUser: null,
   userData: [],
+  userProfile: [],
   userPostsData: [],
   postsData: [],
 
-  signIn: async (email: string, password: string) => {
+  signIn: async (email, password) => {
     await signInWithEmailAndPassword(auth, email, password);
   },
 
@@ -73,12 +74,33 @@ export const useFirebaseServices = create<Firebase>((set) => ({
     });
   },
 
+  getUserProfileData: async (uid) => {
+    const queryUserSnapshot = await getDocs(collection(db, "users"));
+    const queryPostsSnapshot = await getDocs(collection(db, "posts"));
+    const fetchedUserPostsData: PostData[] = [];
+
+    queryUserSnapshot.forEach((doc) => {
+      const postData = doc.data();
+      if (postData.uid === uid) {
+        set({ userProfile: postData });
+      }
+    });
+
+    queryPostsSnapshot.forEach((doc) => {
+      const postData = doc.data() as PostData;
+      if (postData.uid === uid) {
+        fetchedUserPostsData.push(postData);
+      }
+      set({ userPostsData: fetchedUserPostsData.reverse() });
+    });
+    console.log("only get once");
+  },
+
   getPostsData: async () => {
     const unsubscribe = await onSnapshot(
       collection(db, "posts"),
       (snapshot) => {
         const fetchedPostsData: PostData[] = [];
-        const fetchedUserPostsData: PostData[] = [];
 
         snapshot.forEach((doc) => {
           const postData = doc.data() as PostData;
@@ -86,12 +108,7 @@ export const useFirebaseServices = create<Firebase>((set) => ({
           if (postData.privacy === "Public") {
             fetchedPostsData.push(postData);
           }
-
-          if (postData.uid === auth.currentUser?.uid) {
-            fetchedUserPostsData.push(postData);
-          }
         });
-        set({ userPostsData: fetchedUserPostsData.reverse() });
         set({ postsData: fetchedPostsData.reverse() });
 
         console.log("new public posts");
@@ -102,12 +119,7 @@ export const useFirebaseServices = create<Firebase>((set) => ({
     };
   },
 
-  addPost: async (
-    text: string,
-    author: string,
-    uid: string | undefined,
-    privacy
-  ) => {
+  addPost: async (text, author, uid, privacy) => {
     const postID = Date.now().toString();
     const currentDate = new Date();
     const currentDateAndTime = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
@@ -129,7 +141,7 @@ export const useFirebaseServices = create<Firebase>((set) => ({
       .catch((e) => console.error(e));
   },
 
-  editPost: async (documentId: string, text: string) => {
+  editPost: async (documentId, text) => {
     await updateDoc(doc(db, "posts", documentId), {
       text: text,
     }).then(() => {
@@ -137,7 +149,7 @@ export const useFirebaseServices = create<Firebase>((set) => ({
     });
   },
 
-  deletePost: async (documentId: string) => {
+  deletePost: async (documentId) => {
     await deleteDoc(doc(db, "posts", documentId)).then(() => {
       toast({ description: "Deleted Sucessfully" });
     });

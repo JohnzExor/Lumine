@@ -22,9 +22,11 @@ export type PostData = {
 export type Firebase = {
   currentUser: User | null;
   userData: DocumentData;
+  userProfile: DocumentData;
   userPostsData: PostData[];
   postsData: PostData[];
   getUserData: () => void;
+  getUserProfileData: (uid: string) => void;
   signIn: (email: string, password: string) => void;
   signUp: (
     firstName: string,

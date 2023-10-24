@@ -11,6 +11,8 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
+import { Link } from "react-router-dom";
+
 import { IoMdClose } from "react-icons/io";
 import { auth } from "@/Firebase";
 import { PostData } from "@/lib/types";
@@ -37,27 +39,32 @@ const Posts = ({ data }: Props) => {
 
   return (
     <div className=" flex justify-center pt-4">
-      <div className=" border rounded-md p-3 w-80">
+      <div className=" border rounded-md p-3 w-80 md:w-1/3">
         <div className=" flex">
           <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback className=" font-bold uppercase">
-                  {data.author.substring(0, 1)}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <h4 className="text-sm font-medium leading-none flex gap-1">
-                  {data.author}
-                  {data.privacy === "Public" ? (
-                    <FaGlobeAmericas />
-                  ) : (
-                    <BsPersonFillLock />
-                  )}
-                </h4>
-                <p className=" text-xs">{data.createdAt}</p>
-              </div>
+            <div>
+              <Link
+                to={`/profile/${data.uid}`}
+                className="flex gap-2 items-center"
+              >
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback className=" font-bold uppercase">
+                    {data.author.substring(0, 1)}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <h4 className="text-sm font-medium leading-none flex gap-1">
+                    {data.author}
+                    {data.privacy === "Public" ? (
+                      <FaGlobeAmericas />
+                    ) : (
+                      <BsPersonFillLock />
+                    )}
+                  </h4>
+                  <p className=" text-xs">{data.createdAt}</p>
+                </div>
+              </Link>
             </div>
 
             {isEditing ? (
