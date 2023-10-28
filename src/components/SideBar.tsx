@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CgProfile } from "react-icons/cg";
 import { AiOutlineHome } from "react-icons/ai";
-import { GrUserSettings } from "react-icons/gr";
+import { RiUserSettingsLine } from "react-icons/ri";
 import { FiSettings } from "react-icons/fi";
 import { BiLogOut } from "react-icons/bi";
 
@@ -19,24 +19,26 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ModeToggle } from "./Mode-Toggle";
 
 const SideBar = () => {
   const { userData, signOut } = useFirebaseServices();
+
   return (
-    <div className="flex flex-col h-5/6">
-      <p className=" font-bold">Lumine</p>
-      <p className=" font-medium text-sm">Currently logged in as</p>
+    <div className="flex flex-col h-5/6 fixed">
       <div className="flex items-center gap-3">
         <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback className=" font-bold uppercase">L</AvatarFallback>
+          <AvatarImage />
+          <AvatarFallback className=" font-bold uppercase">
+            {userData.firstName?.substring(0, 1)}
+          </AvatarFallback>
         </Avatar>
         <label className=" text-xl">
           {`${userData.firstName} ${userData.lastName}`}
           <p className=" text-xs">{userData.email}</p>
         </label>
       </div>
-      <div className="flex flex-col gap-1 mt-4">
+      <div className="flex flex-col gap-4 mt-4">
         <button>
           <Link
             to={`/profile/${userData.uid}`}
@@ -47,14 +49,14 @@ const SideBar = () => {
           </Link>
         </button>
         <button>
-          <Link to={"/home"} className="flex items-center gap-2">
+          <Link to={"/"} className="flex items-center gap-2">
             <AiOutlineHome size={30} />
             Home
           </Link>
         </button>
         <button>
           <Link to={"/accountsettings"} className="flex items-center gap-2">
-            <GrUserSettings size={30} />
+            <RiUserSettingsLine size={30} />
             Account Settings
           </Link>
         </button>
@@ -65,25 +67,31 @@ const SideBar = () => {
           </Link>
         </button>
       </div>
-      <AlertDialog>
-        <AlertDialogTrigger className="mt-auto mr-auto flex gap-2 items-center">
-          <BiLogOut size={30} /> Logout
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Sign Out</AlertDialogTitle>
-            <AlertDialogDescription>
-              Logging out on this device will occur once you confirm it.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => signOut()}>
-              Logout
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <div className=" mt-auto space-y-4">
+        <div className="flex gap-2 items-center">
+          <ModeToggle />
+          <p>Theme</p>
+        </div>
+        <AlertDialog>
+          <AlertDialogTrigger className=" flex gap-2 items-center">
+            <BiLogOut size={30} /> Logout
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Sign Out</AlertDialogTitle>
+              <AlertDialogDescription>
+                Logging out on this device will occur once you confirm it.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={() => signOut()}>
+                Logout
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
     </div>
   );
 };

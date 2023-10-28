@@ -24,7 +24,7 @@ const SignInForm = () => {
 
   useEffect(() => {
     if (auth.currentUser) {
-      navigate("/home");
+      navigate("/");
     }
   }, [auth.currentUser]);
 

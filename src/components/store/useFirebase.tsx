@@ -93,7 +93,6 @@ export const useFirebaseServices = create<Firebase>((set) => ({
       }
       set({ userPostsData: fetchedUserPostsData.reverse() });
     });
-    console.log("only get once");
   },
 
   getPostsData: async () => {

@@ -48,7 +48,7 @@ const Posts = ({ data }: Props) => {
                 className="flex gap-2 items-center"
               >
                 <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarImage />
                   <AvatarFallback className=" font-bold uppercase">
                     {data.author.substring(0, 1)}
                   </AvatarFallback>

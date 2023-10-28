@@ -152,7 +152,10 @@ const PostForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full">
+          <Button
+            type="submit"
+            className="w-full dark:bg-slate-900 dark:text-white"
+          >
             Post in {isPrivate ? "Private" : "Public"}
           </Button>
         </form>

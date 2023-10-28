@@ -25,8 +25,8 @@ export type Firebase = {
   userProfile: DocumentData;
   userPostsData: PostData[];
   postsData: PostData[];
-  getUserData: () => void;
-  getUserProfileData: (uid: string) => void;
+  getUserData: () => Promise<void>;
+  getUserProfileData: (uid: string) => Promise<void>;
   signIn: (email: string, password: string) => void;
   signUp: (
     firstName: string,

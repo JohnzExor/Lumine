@@ -8,12 +8,12 @@ import { auth } from "@/Firebase";
 
 const NavigationBar = () => {
   return (
-    <nav className=" flex justify-between w-full fixed p-4 px-5 bg-slate-50">
+    <nav className=" flex items-center justify-between md:justify-center w-full fixed p-4 px-5 z-10 bg-opacity-50 backdrop-blur">
       <label className="font-bold flex items-center gap-2">
         <BsFillJournalBookmarkFill size={25} />
         Lumine
       </label>
-      <div className="block md:hidden">
+      <div className="md:hidden">
         <Sheet>
           <SheetTrigger asChild>
             {auth.currentUser && (

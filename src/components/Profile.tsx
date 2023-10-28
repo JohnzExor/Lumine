@@ -4,48 +4,70 @@ import PostForm from "./forms/PostForm";
 import Posts from "./Posts";
 import { Button } from "@/components/ui/button";
 import { Link, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { auth } from "@/Firebase";
+
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Profile = () => {
   const { userPostsData, userProfile, getUserProfileData } =
     useFirebaseServices();
-
   const { uid } = useParams();
 
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
-    getUserProfileData(uid as string);
+    setIsLoading(true);
+    getUserProfileData(uid as string).then(() => {
+      setIsLoading(false);
+    });
   }, [uid]);
-
   return (
-    <div className=" flex flex-col justify-center pt-16 w-full h-auto">
-      <div className=" flex flex-col items-center mb-2">
-        <Avatar className=" h-52 w-52">
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>L</AvatarFallback>
-        </Avatar>
-        <label className=" text-3xl font-semibold mt-1">{`${userProfile.firstName} ${userProfile.lastName}`}</label>
-        <p>{userProfile.email}</p>
-        {userProfile.uid === auth.currentUser?.uid && (
-          <Button className="mt-2">
-            <Link to="/accountsettings">Edit Profile</Link>
-          </Button>
-        )}
+    <div className=" flex flex-col justify-center pt-10 w-full h-auto">
+      {isLoading ? (
+        <div className="flex flex-col items-center space-y-4">
+          <Skeleton className="h-52 w-52 rounded-full" />
+          <div className="flex items-center space-x-4 justify-center">
+            <Skeleton className="h-12 w-12 rounded-full" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-[250px]" />
+              <Skeleton className="h-4 w-[200px]" />
+            </div>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className=" flex flex-col items-center mb-2">
+            <Avatar className=" h-52 w-52">
+              <AvatarImage />
+              <AvatarFallback className=" text-9xl font-bold">
+                {userProfile.firstName?.substring(0, 1)}
+              </AvatarFallback>
+            </Avatar>
+            <label className=" text-3xl font-semibold mt-1">{`${userProfile.firstName} ${userProfile.lastName}`}</label>
+            <p>{userProfile.email}</p>
+            {userProfile.uid === auth.currentUser?.uid && (
+              <Button className="mt-2">
+                <Link to="/accountsettings">Edit Profile</Link>
+              </Button>
+            )}
 
-        <hr className=" w-72 mt-4" />
-      </div>
-      <div>
-        {userProfile.uid === auth.currentUser?.uid && <PostForm />}
-        {userPostsData.map((data, index) =>
-          data.privacy === "Public" ? (
-            <Posts data={data} key={index} />
-          ) : (
-            data.uid === auth.currentUser?.uid && (
-              <Posts data={data} key={index} />
-            )
-          )
-        )}
-      </div>
+            <hr className=" w-72 mt-4" />
+          </div>
+          <div>
+            {userProfile.uid === auth.currentUser?.uid && <PostForm />}
+            {userPostsData.map((data, index) =>
+              data.privacy === "Public" ? (
+                <Posts data={data} key={index} />
+              ) : (
+                data.uid === auth.currentUser?.uid && (
+                  <Posts data={data} key={index} />
+                )
+              )
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };
