@@ -1,17 +1,24 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useFirebaseServices } from "./store/useFirebase";
-import PostForm from "./forms/PostForm";
-import Posts from "./Posts";
+import { useFirebaseServices } from "../store/useFirebase";
+import PostForm from "../forms/PostForm";
+import Posts from "../Posts";
 import { Button } from "@/components/ui/button";
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { auth } from "@/Firebase";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { MdVerified } from "react-icons/md";
+import { RiVipCrown2Fill } from "react-icons/ri";
 
 const Profile = () => {
-  const { userPostsData, userProfile, getUserProfileData } =
-    useFirebaseServices();
+  const {
+    userPostsData,
+    userProfile,
+    getUserProfileData,
+    verified_users,
+    lumine_developers,
+  } = useFirebaseServices();
   const { uid } = useParams();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -44,7 +51,11 @@ const Profile = () => {
                 {userProfile.firstName?.substring(0, 1)}
               </AvatarFallback>
             </Avatar>
-            <label className=" text-3xl font-semibold mt-1">{`${userProfile.firstName} ${userProfile.lastName}`}</label>
+            <label className=" text-3xl font-semibold mt-1 flex items-center gap-1">
+              {`${userProfile.firstName} ${userProfile.lastName}`}
+              {lumine_developers.uid == userProfile.uid && <RiVipCrown2Fill />}
+              {verified_users.uid === userProfile.uid && <MdVerified />}
+            </label>
             <p>{userProfile.email}</p>
             {userProfile.uid === auth.currentUser?.uid && (
               <Button className="mt-2">

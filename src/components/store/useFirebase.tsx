@@ -21,6 +21,8 @@ import {
 export const useFirebaseServices = create<Firebase>((set) => ({
   currentUser: null,
   userData: [],
+  verified_users: [],
+  lumine_developers: [],
   userProfile: [],
   userPostsData: [],
   postsData: [],
@@ -65,12 +67,24 @@ export const useFirebaseServices = create<Firebase>((set) => ({
 
   getUserData: async () => {
     const querySnapshot = await getDocs(collection(db, "users"));
+    const checkIfVerified = await getDocs(collection(db, "verified_users"));
+    const getLumineDevelopers = await getDocs(collection(db, "developers"));
 
     querySnapshot.forEach((doc) => {
       const postData = doc.data();
       if (postData.uid === auth.currentUser?.uid) {
         set({ userData: postData });
       }
+    });
+
+    checkIfVerified.forEach((doc) => {
+      const postData = doc.data();
+      set({ verified_users: postData });
+    });
+
+    getLumineDevelopers.forEach((doc) => {
+      const postData = doc.data();
+      set({ lumine_developers: postData });
     });
   },
 

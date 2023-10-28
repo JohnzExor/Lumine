@@ -19,10 +19,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { ModeToggle } from "./Mode-Toggle";
+import { ModeToggle } from "./theme/Mode-Toggle";
+import { MdVerified } from "react-icons/md";
 
 const SideBar = () => {
-  const { userData, signOut } = useFirebaseServices();
+  const { userData, signOut, verified_users } = useFirebaseServices();
 
   return (
     <div className="flex flex-col h-5/6 fixed">
@@ -33,8 +34,12 @@ const SideBar = () => {
             {userData.firstName?.substring(0, 1)}
           </AvatarFallback>
         </Avatar>
-        <label className=" text-xl">
-          {`${userData.firstName} ${userData.lastName}`}
+        <label className=" text-xl leading-none">
+          <div className="flex items-center gap-1">
+            {`${userData.firstName} ${userData.lastName}`}
+            {verified_users.uid == userData.uid && <MdVerified />}
+          </div>
+
           <p className=" text-xs">{userData.email}</p>
         </label>
       </div>

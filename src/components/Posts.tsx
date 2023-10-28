@@ -12,6 +12,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 import { Link } from "react-router-dom";
+import TimeAgo from "react-timeago";
+import { Textarea } from "@/components/ui/textarea";
 
 import { IoMdClose } from "react-icons/io";
 import { auth } from "@/Firebase";
@@ -21,28 +23,33 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { FaGlobeAmericas } from "react-icons/fa";
 import { BsPersonFillLock } from "react-icons/bs";
+import { MdVerified } from "react-icons/md";
+import { RiVipCrown2Fill } from "react-icons/ri";
 
 type Props = {
   data: PostData;
 };
 
 const Posts = ({ data }: Props) => {
-  const { editPost, deletePost } = useFirebaseServices();
+  const { editPost, deletePost, verified_users, lumine_developers } =
+    useFirebaseServices();
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState("");
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    editPost(data.postId, text);
+    if (text != "") {
+      editPost(data.postId, text);
+    }
     setIsEditing(false);
   };
 
   return (
     <div className=" flex justify-center pt-4">
       <div className=" border rounded-md p-3 w-80 md:w-1/3">
-        <div className=" flex">
-          <div className="space-y-1">
-            <div>
+        <div className="">
+          <div className="space-y-1 w-full">
+            <div className="flex items-start justify-between">
               <Link
                 to={`/profile/${data.uid}`}
                 className="flex gap-2 items-center"
@@ -54,30 +61,58 @@ const Posts = ({ data }: Props) => {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <h4 className="text-sm font-medium leading-none flex gap-1">
+                  <h4 className="text-sm font-medium flex gap-1 items-center">
                     {data.author}
+                    {lumine_developers.uid == data.uid && <RiVipCrown2Fill />}
+                    {verified_users.uid == data.uid && <MdVerified />}
+                  </h4>
+                  <p className=" text-xs flex items-center gap-1">
+                    <TimeAgo date={data.createdAt} />
                     {data.privacy === "Public" ? (
                       <FaGlobeAmericas />
                     ) : (
                       <BsPersonFillLock />
                     )}
-                  </h4>
-                  <p className=" text-xs">{data.createdAt}</p>
+                  </p>
                 </div>
               </Link>
+
+              {data.uid === auth.currentUser?.uid && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <RiArrowDropDownLine size={30} />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>This Post</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => setIsEditing(true)}>
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => deletePost(data.postId)}>
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
 
             {isEditing ? (
-              <form onSubmit={onSubmit} className=" w-64">
-                <textarea
+              <form
+                onSubmit={onSubmit}
+                className=" w-full flex flex-col gap-4 pt-1"
+              >
+                <Textarea
                   autoFocus
                   defaultValue={data.text}
                   onChange={(e) => setText(e.target.value)}
                   placeholder="Tell us a little bit about yourself"
-                  className=" text-sm p-2 w-full border border-black rounded-md"
+                  className=" text-sm resize-none"
                 />
-                <footer className="flex items-center h-full gap-1">
-                  <Button type="submit" className=" h-7 w-full">
+                <footer className="flex items-center h-full gap-1 ml-auto">
+                  <Button
+                    type="submit"
+                    className=" h-7 w-20 dark:bg-slate-900 dark:text-white"
+                  >
                     Submit
                   </Button>
                   <IoMdClose
@@ -88,30 +123,11 @@ const Posts = ({ data }: Props) => {
                 </footer>
               </form>
             ) : (
-              <p className="text-sm text-muted-foreground break-words w-full">
+              <p className="text-sm text-muted-foreground break-words">
                 {data.text}
               </p>
             )}
           </div>
-          {data.uid === auth.currentUser?.uid && (
-            <div className=" ml-auto">
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <RiArrowDropDownLine size={30} />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>This Post</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => setIsEditing(true)}>
-                    Edit
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => deletePost(data.postId)}>
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          )}
         </div>
       </div>
     </div>

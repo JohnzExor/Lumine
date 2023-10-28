@@ -3,6 +3,7 @@ import { DocumentData } from "firebase/firestore";
 import { z } from "zod";
 
 export type UserData = {
+  verified: string;
   firstName: string;
   lastName: string;
   uid: string;
@@ -22,6 +23,8 @@ export type PostData = {
 export type Firebase = {
   currentUser: User | null;
   userData: DocumentData;
+  verified_users: DocumentData;
+  lumine_developers: DocumentData;
   userProfile: DocumentData;
   userPostsData: PostData[];
   postsData: PostData[];

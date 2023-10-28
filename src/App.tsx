@@ -1,4 +1,4 @@
-import Home from "./components/Home";
+import Home from "./components/pages/Home";
 import NavigationBar from "./components/NavigationBar";
 import Protected from "./components/Protected";
 import SignInForm from "./components/auth/SignInForm";
@@ -11,9 +11,9 @@ import { Toaster } from "./components/ui/toaster";
 import { useFirebaseServices } from "./components/store/useFirebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Firebase";
-import Profile from "./components/Profile";
+import Profile from "./components/pages/Profile";
 import PublicPosts from "./components/PublicPosts";
-import { ThemeProvider } from "./components/Theme-Provider";
+import { ThemeProvider } from "./components/theme/Theme-Provider";
 
 const App = () => {
   const { initializeAuthStateListener, getUserData, getPostsData } =
