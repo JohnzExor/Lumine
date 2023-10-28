@@ -1,5 +1,5 @@
 import { auth, db } from "@/Firebase";
-import { Firebase, PostData } from "@/lib/types";
+import { Firebase, PostData, verifiedUser } from "@/lib/types";
 import {
   collection,
   deleteDoc,
@@ -66,23 +66,26 @@ export const useFirebaseServices = create<Firebase>((set) => ({
   },
 
   getUserData: async () => {
-    const querySnapshot = await getDocs(collection(db, "users"));
-    const checkIfVerified = await getDocs(collection(db, "verified_users"));
-    const getLumineDevelopers = await getDocs(collection(db, "developers"));
+    const querySnapshot0 = await getDocs(collection(db, "users"));
+    const querySnapshot1 = await getDocs(collection(db, "verified_users"));
+    const querySnapshot2 = await getDocs(collection(db, "developers"));
 
-    querySnapshot.forEach((doc) => {
+    const fetchedVerifiedUsers: verifiedUser[] = [];
+
+    querySnapshot0.forEach((doc) => {
       const postData = doc.data();
       if (postData.uid === auth.currentUser?.uid) {
         set({ userData: postData });
       }
     });
 
-    checkIfVerified.forEach((doc) => {
-      const postData = doc.data();
-      set({ verified_users: postData });
+    querySnapshot1.forEach((doc) => {
+      const postData = doc.data() as verifiedUser;
+      fetchedVerifiedUsers.push(postData);
     });
+    set({ verified_users: fetchedVerifiedUsers });
 
-    getLumineDevelopers.forEach((doc) => {
+    querySnapshot2.forEach((doc) => {
       const postData = doc.data();
       set({ lumine_developers: postData });
     });

@@ -64,7 +64,9 @@ const Posts = ({ data }: Props) => {
                   <h4 className="text-sm font-medium flex gap-1 items-center">
                     {data.author}
                     {lumine_developers.uid == data.uid && <RiVipCrown2Fill />}
-                    {verified_users.uid == data.uid && <MdVerified />}
+                    {verified_users.some(
+                      (verifiedUsers) => verifiedUsers.uid === data.uid
+                    ) && <MdVerified />}
                   </h4>
                   <p className=" text-xs flex items-center gap-1">
                     <TimeAgo date={data.createdAt} />

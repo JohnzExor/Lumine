@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CgProfile } from "react-icons/cg";
 import { AiOutlineHome } from "react-icons/ai";
-import { RiUserSettingsLine } from "react-icons/ri";
+import { RiUserSettingsLine, RiVipCrown2Fill } from "react-icons/ri";
 import { FiSettings } from "react-icons/fi";
 import { BiLogOut } from "react-icons/bi";
 
@@ -23,7 +23,8 @@ import { ModeToggle } from "./theme/Mode-Toggle";
 import { MdVerified } from "react-icons/md";
 
 const SideBar = () => {
-  const { userData, signOut, verified_users } = useFirebaseServices();
+  const { userData, signOut, verified_users, lumine_developers } =
+    useFirebaseServices();
 
   return (
     <div className="flex flex-col h-5/6 fixed">
@@ -34,12 +35,16 @@ const SideBar = () => {
             {userData.firstName?.substring(0, 1)}
           </AvatarFallback>
         </Avatar>
-        <label className=" text-xl leading-none">
+        <label className="text-xl leading-none break-words">
           <div className="flex items-center gap-1">
             {`${userData.firstName} ${userData.lastName}`}
-            {verified_users.uid == userData.uid && <MdVerified />}
+            <div className="flex">
+              {lumine_developers.uid == userData.uid && <RiVipCrown2Fill />}
+              {verified_users.some(
+                (verifiedUsers) => verifiedUsers.uid === userData.uid
+              ) && <MdVerified />}
+            </div>
           </div>
-
           <p className=" text-xs">{userData.email}</p>
         </label>
       </div>
