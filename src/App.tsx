@@ -14,6 +14,9 @@ import { auth } from "./Firebase";
 import Profile from "./components/pages/Profile";
 import PublicPosts from "./components/PublicPosts";
 import { ThemeProvider } from "./components/theme/Theme-Provider";
+import notFound from "@/assets/404.svg";
+
+import { Skeleton } from "@/components/ui/skeleton";
 
 const App = () => {
   const { initializeAuthStateListener, getUserData, getPostsData } =
@@ -23,6 +26,7 @@ const App = () => {
 
   useEffect(() => {
     initializeAuthStateListener();
+    setIsLoading(true);
     onAuthStateChanged(auth, (user) => {
       if (user) {
         getPostsData();
@@ -39,7 +43,13 @@ const App = () => {
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <NavigationBar />
         {isLoading ? (
-          ""
+          <div className="flex items-center justify-center h-screen space-x-4">
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-[200px]" />
+              <Skeleton className="h-80 w-80" />
+              <Skeleton className="h-4 w-[200px] ml-auto" />
+            </div>
+          </div>
         ) : (
           <Routes>
             <Route
@@ -50,19 +60,21 @@ const App = () => {
               }
             >
               <Route path="/" element={<PublicPosts />} />
-              <Route path="/profile/:uid/*" element={<Profile />} />
+              <Route path="/profile/:uid" element={<Profile />} />
+              <Route
+                path="*"
+                element={
+                  <div className=" flex flex-col gap-4 justify-center items-center h-screen">
+                    <img src={notFound} className=" md:w-96" />
+                    <h1 className=" text-5xl font-bold">404</h1>
+                  </div>
+                }
+              />
             </Route>
             <Route path="/signup" element={<SignUpForm />} />
             <Route path="/login" element={<SignInForm />} />
-            <Route
-              path="*"
-              element={
-                <div className="flex justify-center items-center h-screen bg-[url('/src/assets/404.svg')]"></div>
-              }
-            />
           </Routes>
         )}
-
         <Toaster />
       </ThemeProvider>
     </div>

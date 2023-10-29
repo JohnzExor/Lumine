@@ -53,7 +53,9 @@ const Profile = () => {
             </Avatar>
             <label className=" text-3xl font-semibold mt-1 flex items-center gap-1">
               {`${userProfile.firstName} ${userProfile.lastName}`}
-              {lumine_developers.uid == userProfile.uid && <RiVipCrown2Fill />}
+              {lumine_developers.some((dev) => dev.uid === userProfile.uid) && (
+                <RiVipCrown2Fill />
+              )}
               {verified_users.some(
                 (verifiedUsers) => verifiedUsers.uid === userProfile.uid
               ) && <MdVerified />}

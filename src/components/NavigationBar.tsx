@@ -5,14 +5,23 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 import SideBar from "./SideBar";
 import { auth } from "@/Firebase";
+import { Link } from "react-router-dom";
 
 const NavigationBar = () => {
   return (
     <nav className=" flex items-center justify-between md:justify-center w-full fixed p-4 px-5 z-10 bg-opacity-50 backdrop-blur">
-      <label className="font-bold flex items-center gap-2">
-        <BsFillJournalBookmarkFill size={25} />
-        Lumine
-      </label>
+      {auth.currentUser ? (
+        <Link to={"/"} className="font-bold flex items-center gap-2">
+          <BsFillJournalBookmarkFill size={25} />
+          Lumine
+        </Link>
+      ) : (
+        <div className="font-bold flex items-center gap-2">
+          <BsFillJournalBookmarkFill size={25} />
+          <p>Lumine</p>
+        </div>
+      )}
+
       <div className="md:hidden">
         <Sheet>
           <SheetTrigger asChild>

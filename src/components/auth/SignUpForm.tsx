@@ -19,6 +19,8 @@ import { signUpFormSchema } from "@/lib/types";
 import { useEffect } from "react";
 import { auth } from "@/Firebase";
 
+import loginBackground from "@/assets/login.svg";
+
 const SignUpForm = () => {
   const navigate = useNavigate();
   const { signUp } = useFirebaseServices();
@@ -44,9 +46,16 @@ const SignUpForm = () => {
     navigate("/home");
   };
   return (
-    <div className=" p-4 flex justify-center items-center h-screen w-full">
+    <div className=" p-4 flex gap-20 justify-center items-center h-screen w-full">
+      <img
+        src={loginBackground}
+        className=" md:w-2/5 absolute md:relative md:none -z-10 md:block"
+      />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-2 backdrop-blur-2xl rounded-sm p-4"
+        >
           <h1 className=" text-center text-3xl">Create an Account</h1>
           <FormField
             control={form.control}
@@ -111,7 +120,7 @@ const SignUpForm = () => {
           <Button type="submit">Create Account</Button>
           <p>
             Already have an Account?{" "}
-            <Link to={"/"} className="font-bold">
+            <Link to={"/login"} className="font-bold">
               Sign In
             </Link>
           </p>

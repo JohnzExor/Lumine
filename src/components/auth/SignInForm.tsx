@@ -18,6 +18,8 @@ import { signInFormSchema } from "@/lib/types";
 import { useEffect } from "react";
 import { auth } from "@/Firebase";
 
+import loginBackground from "@/assets/login.svg";
+
 const SignInForm = () => {
   const { signIn } = useFirebaseServices();
   const navigate = useNavigate();
@@ -41,9 +43,16 @@ const SignInForm = () => {
   };
 
   return (
-    <div className=" p-4 flex justify-center items-center h-screen w-full">
+    <div className=" p-4 gap-20 flex justify-center items-center h-screen w-full">
+      <img
+        src={loginBackground}
+        className=" md:w-2/5 absolute md:relative md:none -z-10 md:block"
+      />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-2 backdrop-blur-2xl rounded-sm p-4"
+        >
           <h1 className=" text-center text-3xl">Login your Account</h1>
           <FormField
             control={form.control}

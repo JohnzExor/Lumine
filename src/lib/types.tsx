@@ -9,7 +9,7 @@ export type UserData = {
   email: string;
 };
 
-export type verifiedUser = {
+export type verifiedUID = {
   uid: string;
 };
 
@@ -26,8 +26,8 @@ export type PostData = {
 export type Firebase = {
   currentUser: User | null;
   userData: DocumentData;
-  verified_users: verifiedUser[];
-  lumine_developers: DocumentData;
+  verified_users: verifiedUID[];
+  lumine_developers: verifiedUID[];
   userProfile: DocumentData;
   userPostsData: PostData[];
   postsData: PostData[];

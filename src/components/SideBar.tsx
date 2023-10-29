@@ -39,7 +39,9 @@ const SideBar = () => {
           <div className="flex items-center gap-1">
             {`${userData.firstName} ${userData.lastName}`}
             <div className="flex">
-              {lumine_developers.uid == userData.uid && <RiVipCrown2Fill />}
+              {lumine_developers.some((dev) => dev.uid === userData.uid) && (
+                <RiVipCrown2Fill />
+              )}
               {verified_users.some(
                 (verifiedUsers) => verifiedUsers.uid === userData.uid
               ) && <MdVerified />}
