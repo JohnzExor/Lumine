@@ -6,6 +6,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SideBar from "./SideBar";
 import { auth } from "@/Firebase";
 import { Link } from "react-router-dom";
+import { ModeToggle } from "./theme/Mode-Toggle";
 
 const NavigationBar = () => {
   return (
@@ -19,6 +20,7 @@ const NavigationBar = () => {
         <div className="font-bold flex items-center gap-2">
           <BsFillJournalBookmarkFill size={25} />
           <p>Lumine</p>
+          <ModeToggle />
         </div>
       )}
 

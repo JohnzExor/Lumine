@@ -47,7 +47,7 @@ const Profile = () => {
           <div className=" flex flex-col items-center mb-2">
             <Avatar className=" h-52 w-52">
               <AvatarImage />
-              <AvatarFallback className=" text-9xl font-bold">
+              <AvatarFallback className=" text-9xl font-bold uppercase">
                 {userProfile.firstName?.substring(0, 1)}
               </AvatarFallback>
             </Avatar>

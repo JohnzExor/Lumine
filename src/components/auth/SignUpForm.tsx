@@ -117,7 +117,13 @@ const SignUpForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Create Account</Button>
+
+          <Button
+            type="submit"
+            className=" w-full dark:bg-slate-900 dark:text-white"
+          >
+            Create Account
+          </Button>
           <p>
             Already have an Account?{" "}
             <Link to={"/login"} className="font-bold">

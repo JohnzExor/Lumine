@@ -88,7 +88,12 @@ const SignInForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Login</Button>
+          <Button
+            type="submit"
+            className=" w-full dark:bg-slate-900 dark:text-white"
+          >
+            Login
+          </Button>
           <p>
             Dont have an Account?{" "}
             <Link to={"/signup"} className=" font-bold">
